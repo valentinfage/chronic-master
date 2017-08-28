@@ -1,0 +1,8 @@
+*.rbc
+.yardoc
+/.bundle/
+/pkg/
+/coverage/
+/doc/
+/tags/
+Gemfile.lock
