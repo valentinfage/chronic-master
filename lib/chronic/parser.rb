@@ -146,6 +146,7 @@ module Chronic
       text.gsub!(/\bsoirce\b/, 'this night')
       text.gsub!(/\bce (?:dernier|derniere)\b/, 'last') #a tester
       text.gsub!(/\b(?:il\sy\sa|avant|il\sya(?: now)?)\b/, 'past')
+      text.gsub!(/\bsamedi\sdernier\b/, 'last week')
 
 
 
