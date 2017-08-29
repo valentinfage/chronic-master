@@ -122,11 +122,15 @@ module Chronic
       text.gsub!('quarter', '15')
       text.gsub!('half', '30')
       text.gsub!(/\bnoon|midday\b/, '12:00pm')
-      text.gsub!(/(\d{1,2}) (to|till|prior to|before)\b/, '\1 minutes past')
+      text.gsub!(/(\d{1,2}) (to|till|prior to|before)\b/, '\  ')
       text.gsub!(/\btonight\b/, 'this night')
       text.gsub!(/\bthis (?:last|past)\b/, 'last')
       text.gsub!(/\b(?:ago|before(?: now)?)\b/, 'past')
 
+      text.gsub!(/(monday|tuesday|wednesday|thursday|friday|saturday|sunday) (last|next)/, '\2 \1')
+      text.gsub!(/(january|february|march|april|may|june|july|august|september|october|november|december) (last|next)/, '\2 \1')
+      text.gsub!(/\b(\d{1,2})h(\d{2})\b/, '\1:\2')
+      text.gsub!(/\b(\d{1,2})h\b/, '\1:00')
 
       ### Francais
       text.gsub!(/^deuxieme /, '2nd ')
