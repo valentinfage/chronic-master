@@ -126,6 +126,11 @@ module Chronic
       text.gsub!(/\btonight\b/, 'this night')
       text.gsub!(/\bthis (?:last|past)\b/, 'last')
       text.gsub!(/\b(?:ago|before(?: now)?)\b/, 'past')
+      
+      text.gsub!(/(monday|tuesday|wednesday|thursday|friday|saturday|sunday) (last|next)/, '\2 \1')
+      text.gsub!(/(january|february|march|april|may|june|july|august|september|october|november|december) (last|next)/, '\2 \1')
+      text.gsub!(/\b(\d{1,2})h(\d{2})\b/, '\1:\2')
+      text.gsub!(/\b(\d{1,2})h\b/, '\1:00')
 
 
       ### Francais
