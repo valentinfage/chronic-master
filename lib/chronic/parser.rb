@@ -94,12 +94,12 @@ module Chronic
     # Returns a new String ready for Chronic to parse.
     def pre_normalize(text)
       text = text.to_s.downcase
-      text.gsub!(/\b(\d{2})\.(\d{2})\.(\d{4})\b/, '\3 / \2 / \1')
+      text.gsub!(/\b(\d{2})\.(\d{2})\.(\d{4})\b/, '\3 / \2 / \1') #regex date 12/12/1990 jour/mois/annee
       text.gsub!(/\b([ap])\.m\.?/, '\1m')
       text.gsub!(/(\s+|:\d{2}|:\d{2}\.\d+)\-(\d{2}:?\d{2})\b/, '\1tzminus\2')
       text.gsub!(/\./, ':')
       text.gsub!(/([ap]):m:?/, '\1m')
-      text.gsub!(/'(\d{2})\b/) do
+      text.gsub!(/'(\d{2})\b/) do #regex '02 apostrophe + 2 chiffres
         number = $1.to_i
 
         if Chronic::Date::could_be_year?(number)
@@ -108,32 +108,64 @@ module Chronic
           number
         end
       end
-      text.gsub!(/['"]/, '')
-      text.gsub!(/,/, ' ')
+
+      ### Anglais
       text.gsub!(/^second /, '2nd ')
       text.gsub!(/\bsecond (of|day|month|hour|minute|second|quarter)\b/, '2nd \1')
+      text.gsub!(/\byesterday\b/, 'last day')
+      text.gsub!(/\btoday\b/, 'this day')
+      text.gsub!(/\btomm?orr?ow\b/, 'next day')
       text.gsub!(/\bthird quarter\b/, '3rd q')
       text.gsub!(/\bfourth quarter\b/, '4th q')
+      text.gsub!(/\bmidnight\b/, '24:00')
+      text.gsub!(/\bnow\b/, 'this second')
+      text.gsub!('quarter', '15')
+      text.gsub!('half', '30')
+      text.gsub!(/\bnoon|midday\b/, '12:00pm')
+      text.gsub!(/(\d{1,2}) (to|till|prior to|before)\b/, '\1 minutes past')
+      text.gsub!(/\btonight\b/, 'this night')
+      text.gsub!(/\bthis (?:last|past)\b/, 'last')
+      text.gsub!(/\b(?:ago|before(?: now)?)\b/, 'past')
+
+
+      ### Francais
+      text.gsub!(/^deuxieme /, '2nd ')
+      text.gsub!(/\bdeuxieme (du|jour|mois|heure|minute|seconde|trimestre)\b/, '2nd \1')
+      text.gsub!(/\bhier\b/, 'last day')
+      text.gsub!(/\baujourdhui\b/, 'this day')
+      text.gsub!(/\bdem?ma?in\b/, 'next day')
+      text.gsub!(/\btroisieme trimestre\b/, '3rd q')
+      text.gsub!(/\bquatrieme trimestre\b/, '4th q')
+      text.gsub!(/\bminuit\b/, '24:00')
+      text.gsub!(/\bmaintenant\b/, 'this second')
+      text.gsub!('trimestre', '15')
+      text.gsub!('moitie', '30')
+      text.gsub!(/\bmidi|dej\b/, '12:00pm')
+      text.gsub!(/(\d{1,2}) (moins|avant)\b/, '\1 minutes past') #a tester
+      text.gsub!(/\bce\ssoir\b/, 'this night')
+      text.gsub!(/\bsoirce\b/, 'this night')
+      text.gsub!(/\bce (?:dernier|derniere)\b/, 'last') #a tester
+      text.gsub!(/\b(?:il\sy\sa|avant|il\sya(?: now)?)\b/, 'past')
+
+
+
+
+      ### General
+      text.gsub!(/['"]/, '') #pour les ""
+      text.gsub!(/,/, ' ') # pour les ,
+
+
+
       text.gsub!(/quarters?(\s+|$)(?!to|till|past|after|before)/, 'q\1')
       text = Numerizer.numerize(text)
       text.gsub!(/\b(\d)(?:st|nd|rd|th)\s+q\b/, 'q\1')
       text.gsub!(/([\/\-\,\@])/) { ' ' + $1 + ' ' }
       text.gsub!(/(?:^|\s)0(\d+:\d+\s*pm?\b)/, ' \1')
-      text.gsub!(/\btoday\b/, 'this day')
-      text.gsub!(/\btomm?orr?ow\b/, 'next day')
-      text.gsub!(/\byesterday\b/, 'last day')
-      text.gsub!(/\bnoon|midday\b/, '12:00pm')
-      text.gsub!(/\bmidnight\b/, '24:00')
-      text.gsub!(/\bnow\b/, 'this second')
-      text.gsub!('quarter', '15')
-      text.gsub!('half', '30')
-      text.gsub!(/(\d{1,2}) (to|till|prior to|before)\b/, '\1 minutes past')
       text.gsub!(/(\d{1,2}) (after|past)\b/, '\1 minutes future')
-      text.gsub!(/\b(?:ago|before(?: now)?)\b/, 'past')
-      text.gsub!(/\bthis (?:last|past)\b/, 'last')
+
       text.gsub!(/\b(?:in|during) the (morning)\b/, '\1')
       text.gsub!(/\b(?:in the|during the|at) (afternoon|evening|night)\b/, '\1')
-      text.gsub!(/\btonight\b/, 'this night')
+
       text.gsub!(/\b\d+:?\d*[ap]\b/,'\0m')
       text.gsub!(/\b(\d{2})(\d{2})(am|pm)\b/, '\1:\2\3')
       text.gsub!(/(\d)([ap]m|oclock)\b/, '\1 \2')
