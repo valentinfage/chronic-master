@@ -132,11 +132,6 @@ module Chronic
       text.gsub!(/\b(\d{1,2})h(\d{2})\b/, '\1:\2')
       text.gsub!(/\b(\d{1,2})h\b/, '\1:00')
 
-      text.gsub!(/(monday|tuesday|wednesday|thursday|friday|saturday|sunday) (last|next)/, '\2 \1')
-      text.gsub!(/(january|february|march|april|may|june|july|august|september|october|november|december) (last|next)/, '\2 \1')
-      text.gsub!(/\b(\d{1,2})h(\d{2})\b/, '\1:\2')
-      text.gsub!(/\b(\d{1,2})h\b/, '\1:00')
-
       ### Francais
       text.gsub!(/^deuxieme /, '2nd ')
       text.gsub!(/\bdeuxieme (du|jour|mois|heure|minute|seconde|trimestre)\b/, '2nd \1')
